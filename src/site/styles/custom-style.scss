@@ -3,11 +3,54 @@ body {
       ADD YOUR CUSTOM STYLING HERE. (INSIDE THE body {...} section.)
       IT WILL TAKE PRECEDENCE OVER THE STYLING IN THE STYLE.CSS FILE.
    ***/
-    //  background-color: white;
-    //  .content {
-    //   font-size: 14px;
-    //  }
-    //  h1 {
-    //   color: black;
-    //  }
+
+    // 📌 サイドバー（ファイルツリー + アウトライン）を横並びにする
+    #sidebar {
+        display: flex;
+        flex-direction: row; /* 横並びにする */
+        width: 400px; /* サイドバー全体の幅 */
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh; /* 画面の縦いっぱい */
+        background: #1e1e1e; /* Obsidian 風の背景色 */
+        border-right: 1px solid #444;
+    }
+
+    // 📌 左側（ファイルツリー）
+    #file-tree {
+        width: 50%;
+        border-right: 1px solid #444;
+        overflow-y: auto; /* 縦スクロール対応 */
+        height: 100vh;
+        padding: 10px;
+        color: white;
+    }
+
+    // 📌 右側（アウトライン）
+    #outline {
+        width: 50%;
+        overflow-y: auto; /* 縦スクロール対応 */
+        height: 100vh;
+        padding: 10px;
+        color: white;
+    }
+
+    // 📌 本文を画面いっぱいに広げる
+    #content {
+        margin-left: 400px; /* サイドバーの幅分だけずらす */
+        max-width: 100%; /* 画面いっぱい */
+        padding: 20px;
+    }
+
+    // 📌 本文の改行をなくし、横スクロール可能にする
+    #content p {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    // 📌 見出しのレイアウト調整（オプション）
+    #content h1, #content h2, #content h3 {
+        margin-top: 20px;
+    }
 }
