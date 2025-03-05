@@ -898,3 +898,46 @@ div.dataview-error-box {
 .dataview.small-text::after {
 	content: ")";
 }
+
+/*************************/
+/** 独自追加 **/
+/*************************/
+
+.toc {
+    position: fixed; /* 画面の固定位置に配置 */
+    top: 0;
+    right: 12px;
+    ; /* .filetree-sidebar の width と合わせる */
+    width: 500px; /* 必要に応じて幅を調整 */
+    height: 100vh; /* 画面全体の高さを占める */
+    background-color: var(--background-primary);
+    padding: 10px;
+    border-left: 1px solid var(--text-accent);
+    overflow-y: auto;
+}
+
+.toc-container {
+    font-size: 1rem;
+    height: auto; /* または、固定値で調整 */
+    max-height: none;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    border-left: 1px solid var(--text-accent)
+}
+
+.content {
+    max-width: 1200px;
+    margin-left: 300px;
+    font-size: 18px;
+    line-height: 1.5;
+    margin-top: 90px;
+    position: relative
+}
+
+@media(max-width: 800px) {
+    .content {
+        margin-top: 75px; /* ← セミコロンが抜けていた */
+        margin-left: 0px; /* 800px 以下では margin-left を 0 に */
+        
+    }
+}
