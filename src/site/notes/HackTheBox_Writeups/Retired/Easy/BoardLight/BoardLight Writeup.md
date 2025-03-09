@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/board-light/board-light-writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/board-light/board-light-writeup/","noteIcon":""}
 ---
 
 

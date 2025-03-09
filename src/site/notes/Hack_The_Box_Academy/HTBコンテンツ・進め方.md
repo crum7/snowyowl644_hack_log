@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-academy/htb/"}
+{"dg-publish":true,"permalink":"/hack-the-box-academy/htb/","noteIcon":""}
 ---
 
 

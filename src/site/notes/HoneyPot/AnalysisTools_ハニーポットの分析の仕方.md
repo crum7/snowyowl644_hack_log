@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/honey-pot/analysis-tools/"}
+{"dg-publish":true,"permalink":"/honey-pot/analysis-tools/","noteIcon":""}
 ---
 
 # ハニーポット分析のための基本ツール群

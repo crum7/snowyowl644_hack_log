@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/diamond-model/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/diamond-model/","noteIcon":""}
 ---
 
 - サイバー攻撃や侵入行動を分析するためのフレームワーク

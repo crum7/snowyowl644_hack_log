@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/cyber-kill-chain/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/cyber-kill-chain/","noteIcon":""}
 ---
 
 - **キル チェーン**という用語は、攻撃の構造に関連する軍事概念

@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/medium/ten-ten/ten-ten-writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/medium/ten-ten/ten-ten-writeup/","noteIcon":""}
 ---
 
 

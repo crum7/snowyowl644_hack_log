@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/green-horn/green-horn-writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/green-horn/green-horn-writeup/","noteIcon":""}
 ---
 
 

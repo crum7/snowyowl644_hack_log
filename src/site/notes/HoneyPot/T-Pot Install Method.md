@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/honey-pot/t-pot-install-method/"}
+{"dg-publish":true,"permalink":"/honey-pot/t-pot-install-method/","noteIcon":""}
 ---
 
 # T-Potについて

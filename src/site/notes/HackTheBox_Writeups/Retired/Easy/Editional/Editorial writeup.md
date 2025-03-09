@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/editional/editorial-writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/editional/editorial-writeup/","noteIcon":""}
 ---
 
 

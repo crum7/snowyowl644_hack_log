@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/defence-technique/htb-academy-defense/"}
+{"dg-publish":true,"permalink":"/defence-technique/htb-academy-defense/","noteIcon":""}
 ---
 
 HTTP/Sを利用したファイル転送とセキュリティ対策

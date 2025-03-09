@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/mitre/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/mitre/","noteIcon":""}
 ---
 
 - アメリカ合衆国に拠点を置く非営利の研究開発機関

@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/honey-pot/kibana/"}
+{"dg-publish":true,"permalink":"/honey-pot/kibana/","noteIcon":""}
 ---
 
 - テーブルビューでページが分割して表示されちゃうんだけど、分割しないで1ページで見たいとき

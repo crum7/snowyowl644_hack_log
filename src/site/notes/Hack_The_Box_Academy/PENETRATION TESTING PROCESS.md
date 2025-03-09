@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-academy/penetration-testing-process/"}
+{"dg-publish":true,"permalink":"/hack-the-box-academy/penetration-testing-process/","noteIcon":""}
 ---
 
 

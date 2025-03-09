@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/unified-kill-chain/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/unified-kill-chain/","noteIcon":""}
 ---
 
 

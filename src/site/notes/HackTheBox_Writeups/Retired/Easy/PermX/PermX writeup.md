@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/perm-x/perm-x-writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/easy/perm-x/perm-x-writeup/","noteIcon":""}
 ---
 
 

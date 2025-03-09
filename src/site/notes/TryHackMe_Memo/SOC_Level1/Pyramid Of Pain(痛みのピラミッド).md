@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/pyramid-of-pain/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/soc-level1/pyramid-of-pain/","noteIcon":""}
 ---
 
 

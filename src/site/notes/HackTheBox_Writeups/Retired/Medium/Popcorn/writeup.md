@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/medium/popcorn/writeup/"}
+{"dg-publish":true,"permalink":"/hack-the-box-writeups/retired/medium/popcorn/writeup/","noteIcon":""}
 ---
 
 ![HTB Banner](https://github.com/hackthebox/writeup-templates/blob/master/machine/assets/images/banner.png?raw=true)

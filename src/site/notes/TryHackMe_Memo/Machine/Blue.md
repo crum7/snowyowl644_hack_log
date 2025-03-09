@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/try-hack-me-memo/machine/blue/"}
+{"dg-publish":true,"permalink":"/try-hack-me-memo/machine/blue/","noteIcon":""}
 ---
 
 ![](https://raw.githubusercontent.com/crum7/Obsidian/main/TryHackMe_Memo/Machine/images/Generic-Banner.svg)

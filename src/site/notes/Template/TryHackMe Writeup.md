@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/template/try-hack-me-writeup/"}
+{"dg-publish":true,"permalink":"/template/try-hack-me-writeup/","noteIcon":""}
 ---
 
 ![](https://raw.githubusercontent.com/crum7/Obsidian/main/Template/images/Generic-Banner.svg)

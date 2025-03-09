@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/honey-pot/t-pot-over-view/"}
+{"dg-publish":true,"permalink":"/honey-pot/t-pot-over-view/","noteIcon":""}
 ---
 
 多種多様なハニーポットを統合したオールインワンのプラットフォーム
