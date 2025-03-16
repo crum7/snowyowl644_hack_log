@@ -10,3 +10,6 @@ HTTP/Sを利用したファイル転送とセキュリティ対策
 
 パスワードマネージャー
 - https://academy.hackthebox.com/module/147/section/1333
+
+サービスの誤設定についてとその対処法
+- https://academy.hackthebox.com/module/116/section/1514
