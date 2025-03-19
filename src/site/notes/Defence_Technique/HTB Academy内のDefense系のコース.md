@@ -13,3 +13,6 @@ HTTP/Sを利用したファイル転送とセキュリティ対策
 
 サービスの誤設定についてとその対処法
 - https://academy.hackthebox.com/module/116/section/1514
+
+ピボット・トンネル・ポートフォワーディングの検出と予防
+- https://academy.hackthebox.com/module/158/section/1442

@@ -429,3 +429,5 @@ Hyper-V Requirements:      A hypervisor has been detected. Features required for
 
 AdminDCの共有フォルダが見つかったので、そこにアクセスすると、最後のflagが見つかる。
 ![](https://i.imgur.com/Rbp6IrM.png)
+
+
