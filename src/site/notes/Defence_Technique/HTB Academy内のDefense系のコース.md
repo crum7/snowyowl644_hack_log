@@ -16,3 +16,10 @@ HTTP/Sを利用したファイル転送とセキュリティ対策
 
 ピボット・トンネル・ポートフォワーディングの検出と予防
 - https://academy.hackthebox.com/module/158/section/1442
+
+Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning and SMB Relayの防止
+- https://academy.hackthebox.com/module/143/section/1420
+
+パスワードスプレー攻撃に対する対策と検知
+- https://academy.hackthebox.com/module/143/section/1422
+
