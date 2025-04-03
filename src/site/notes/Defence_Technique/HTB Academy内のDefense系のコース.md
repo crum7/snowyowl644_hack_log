@@ -23,3 +23,7 @@ Adversary-in-the-Middle: LLMNR/NBT-NS Poisoning and SMB Relayの防止
 パスワードスプレー攻撃に対する対策と検知
 - https://academy.hackthebox.com/module/143/section/1422
 
+Kerberoasting攻撃に対する検出と防御
+- https://academy.hackthebox.com/module/143/section/1423
+	- ページ後半
+- https://adsecurity.org/?p=3458
