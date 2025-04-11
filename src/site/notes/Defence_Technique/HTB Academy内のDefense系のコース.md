@@ -27,3 +27,9 @@ Kerberoasting攻撃に対する検出と防御
 - https://academy.hackthebox.com/module/143/section/1423
 	- ページ後半
 - https://adsecurity.org/?p=3458
+
+ADの防御
+- https://academy.hackthebox.com/module/143/section/1277
+
+ADの監査
+- https://academy.hackthebox.com/module/143/section/1460
