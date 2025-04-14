@@ -33,3 +33,6 @@ ADの防御
 
 ADの監査
 - https://academy.hackthebox.com/module/143/section/1460
+
+SQLインジェクションからの防御
+- https://academy.hackthebox.com/module/33/section/794
