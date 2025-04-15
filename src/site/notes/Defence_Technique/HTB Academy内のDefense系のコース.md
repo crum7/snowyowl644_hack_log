@@ -36,3 +36,6 @@ ADの監査
 
 SQLインジェクションからの防御
 - https://academy.hackthebox.com/module/33/section/794
+
+XSSの防御
+- https://academy.hackthebox.com/module/103/section/1009
