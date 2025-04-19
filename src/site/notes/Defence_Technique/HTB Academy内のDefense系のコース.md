@@ -39,3 +39,9 @@ SQLインジェクションからの防御
 
 XSSの防御
 - https://academy.hackthebox.com/module/103/section/1009
+
+ファイルインクルージョン対策
+- https://academy.hackthebox.com/module/23/section/622
+
+ファイルアップロード攻撃からの対策
+- https://academy.hackthebox.com/module/136/section/1309
