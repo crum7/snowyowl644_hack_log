@@ -12,7 +12,6 @@
 - Hack Date: {{date}},{{time}}
 
 ---
-
 # Enumeration
 Principle
 1. **目に見えるものだけがすべてではない。** あらゆる視点を考慮しろ
