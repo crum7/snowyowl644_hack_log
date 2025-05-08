@@ -57,3 +57,9 @@ IDORの対策
 
 XXEの対策
 - https://academy.hackthebox.com/module/134/section/1218
+
+アプリケーションのハードニング（堅牢化）
+- https://academy.hackthebox.com/module/113/section/1096
+
+Windows Hardeningについて
+- https://academy.hackthebox.com/module/67/section/636
