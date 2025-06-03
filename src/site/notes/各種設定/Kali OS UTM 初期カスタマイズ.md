@@ -52,11 +52,42 @@ sudo apt update
 
 ```
 ## Bloodhound
-neo4j : mimic
+admin : B7r!kLp29#qW
+admin : mimic
 
 
 ## ログインしたらやるコマンド
 ```sh
 setxkbmap -option ctrl:swap_lwin_lctl
 xrandr --output Virtual-1 --mode "1784x1440_alt"
+```
+
+
+# 環境構築
+新しいツールを入れたら、次のためにパスを通す
+ダウンロード・インストールフォルダ : `/home/kali/tools`
+エイリアスを書くフォルダ : `/home/kali/.local/bin`
+
+pythonの場合 
+- 仮想環境を作成
+```sh
+python3 -m venv venv
+source venv/bin/activate
+```
+
+エイリアス作成
+```sh
+cd /home/kali/.local/bin
+nano <ToolName>
+```
+
+書き込み
+```sh
+#!/bin/bash
+source ~/tools/<ToolName>/venv/bin/activate
+python3 ~/tools/<ToolName>/<Excute File> "$@"
+```
+
+```sh
+chmod +x ~/.local/bin/<ToolName>
 ```

