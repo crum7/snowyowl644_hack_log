@@ -2,8 +2,8 @@
 {"dg-publish":true,"permalink":"/template/try-hack-me-writeup/","noteIcon":""}
 ---
 
-![](https://raw.githubusercontent.com/crum7/Obsidian/main/Template/images/Generic-Banner.svg)
-
+<!--⚠️Imgur upload failed, check dev console-->
+![Pasted image 20250602151619.png](/img/user/Pasted%20image%2020250602151619.png)
 - URL : 
 - #easy #medium #hard #insane
 - OS : #Linux #Windows
