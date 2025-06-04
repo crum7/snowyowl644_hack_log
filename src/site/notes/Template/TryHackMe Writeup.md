@@ -3,7 +3,7 @@
 ---
 
 <!--⚠️Imgur upload failed, check dev console-->
-![Pasted image 20250602151619.png](/img/user/Pasted%20image%2020250602151619.png)
+![[Pasted image 20250602151619.png\|Pasted image 20250602151619.png]]
 - URL : 
 - #easy #medium #hard #insane
 - OS : #Linux #Windows
