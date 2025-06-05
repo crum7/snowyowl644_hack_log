@@ -57,6 +57,11 @@ LDAPサーバーに接続し、指定した条件でユーザー情報などを�
 ldapsearch -h <DC_IP> -x -b "DC=DOMAIN,DC=LOCAL" -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d" "
 ```
 *(DC=DOMAIN,DC=LOCAL は対象ドメインの識別名に置き換え)*
+
+自分の権限の列挙
+```sh
+ldapsearch -x -H ldap://$Target_IP -D "USERNAME@DOMAIN" -w 'PASSEWORD' -b "DC=PUPPY,DC=HTB" "(sAMAccountName=USERNAME)"
+```
 ### windapsearch
 Active DirectoryのLDAP情報を列挙するためのPythonスクリプトで、特にユーザー列挙に利用
 ```shell
@@ -247,12 +252,16 @@ python3 windapsearch.py --dc-ip <DC_IP> -u <USER>@<DOMAIN> -p <PASSWORD> --da
 ```shell
 python3 windapsearch.py --dc-ip <DC_IP> -u <USER>@<DOMAIN> -p <PASSWORD> -PU
 ```
+
 ### BloodHound.py / SharpHound
 Active Directoryのオブジェクト間の関係性を収集・分析し、攻撃経路を視覚化
 - Linuxコレクター:
 ```shell
 sudo bloodhound-python -u '<USER>' -p '<PASSWORD>' -ns <DC_IP> -d <DOMAIN_NAME> -c all
 ```
+- 例
+	- `sudo bloodhound-python -u 'levi.james@puppy.htb' -p 'KingofAkron2025!' -ns 10.129.232.75 -d puppy.htb -c all`
+
 - Windowsコレクター (SharpHound)
 ```powershell
 .\SharpHound.exe -c All --zipfilename <OUTPUT_ZIP_NAME>

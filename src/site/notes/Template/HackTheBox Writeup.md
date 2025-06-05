@@ -2,7 +2,7 @@
 {"dg-publish":true,"permalink":"/template/hack-the-box-writeup/","noteIcon":""}
 ---
 
-![HTB Banner](https://github.com/hackthebox/writeup-templates/blob/master/machine/assets/images/banner.png?raw=true)
+![](https://i.imgur.com/MFFHLmO.png)
 
 
 - URL : 

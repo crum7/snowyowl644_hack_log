@@ -35,12 +35,18 @@ UDPスキャン
 sudo nmap -sU -T4 -p0-65535 -Pn $Target_IP
 ```
 ### Nmapセット
-不安だったら、`-T2`とかに
 ```sh
 echo -e '\nexport Target_IP=""' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+zshの場合はこれ
+```sh
+echo 'export Target_IP=""' >> ~/.zshrc
+source ~/.zshrc
+```
+
+不安だったら、`-T2`とかに
 ```bash
 sudo nmap -p0-65535 -T4 -Pn -v --open $Target_IP -oG open_ports.txt
 ports=$(grep "Ports:" open_ports.txt | awk -F'Ports: ' '{print $2}' | tr ',' '\n' | awk -F'/' '{print $1}' | tr '\n' ',' | sed 's/,$//')
@@ -408,7 +414,7 @@ net start sessionhijack
 
 - evil-winrm 接続
 ```
-evil-winrm -i 10.129.201.248 -u Cry0l1t3 -p P455w0rD!
+evil-winrm -i TargetIP -u Cry0l1t3 -p P455w0rD!
 ```
 upload・downloadコマンドで、ファイルを転送できる
 
@@ -460,8 +466,8 @@ smbmap   -H $Target_IP -u "" -p ""
 
 - 共有内参照/取得
 ```
-smbclient //$Target_IP/<Sharename> --option='client min protocol=SMB2'
-smbmap -H $Target_IP -r notes
+smbclient //"$Target_IP"/SHARENAME -U USERNAME%PASSWORD
+smbmap -H 10.129.232.75 -u USERNAME -p 'PASSWORD' -s SHARENAME
 ```
 
 - OS / 脆弱性スキャン
@@ -2311,7 +2317,7 @@ nmap -PE -sn <ターゲットの内部ネットワークCIDR>
 ```
 
 - Hydraなどのブルートフォースツールと組み合わせて使う
-{{CODE_BLOCK_134}}
+{{CODE_BLOCK_135}}
 
 - まとめ
 	- CUPPは「精度重視」の攻撃をしたいときに効果的
@@ -2319,24 +2325,24 @@ nmap -PE -sn <ターゲットの内部ネットワークCIDR>
 	- ワードリスト作成を自動化できるので、初心者でも扱いやすい
 	- 
 ## 辞書拡張
-{{CODE_BLOCK_135}}
-
 {{CODE_BLOCK_136}}
+
+{{CODE_BLOCK_137}}
 
 
 ## ブルートフォースの実行
 #### crackmapexec
-{{CODE_BLOCK_137}}
+{{CODE_BLOCK_138}}
 protoには、サービス名を指定する
 winrmをブルートフォース
-{{CODE_BLOCK_138}}
+{{CODE_BLOCK_139}}
 
 #### hydra
 また、単一のユーザー名・パスワードの場合は小文字の-l、-pを使う
-{{CODE_BLOCK_139}}
+{{CODE_BLOCK_140}}
 
 hydraオプションの基本
-{{CODE_BLOCK_140}}
+{{CODE_BLOCK_141}}
 
 |                    |                                                                |                                                                                             |
 | ------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
@@ -2366,7 +2372,7 @@ hydraオプションの基本
 | **RDP**           | hydra -l admin -P /path/to/password_list.txt rdp://192.168.1.100                                             |
 辞書を作らなくてもこんな感じでもできる
 - 6〜8文字の全パターンを自動生成（英小文字・英大文字・数字）
-{{CODE_BLOCK_141}}
+{{CODE_BLOCK_142}}
 
 - **このコマンドがやってること**
 	- `-l administrator` → ログイン名として「administrator」を指定
@@ -2376,10 +2382,10 @@ hydraオプションの基本
 
 ##### Basic認証に対するブルートフォース
 辞書の取得
-{{CODE_BLOCK_142}}
+{{CODE_BLOCK_143}}
 
 ブルートフォースの実行
-{{CODE_BLOCK_143}}
+{{CODE_BLOCK_144}}
 - `-l basic-auth-user` → ログイン試行に使うユーザー名を指定
 - `-P 2023-200_most_used_passwords.txt` → 使用するパスワードリスト
 - `127.0.0.1` → ターゲットのIP（この場合はローカルホスト）
@@ -2421,7 +2427,7 @@ hydraオプションの基本
 		- 例：`"Invalid credentials"`, `"Incorrect password"`, `"Login failed"` など
 	- Hydraはこの文字列を探して、失敗したら次の組み合わせに進む
 	- 使用例：
-	{{CODE_BLOCK_144}}
+	{{CODE_BLOCK_145}}
 
 - S=（Success Condition）とは？
 	- 「この文字列がレスポンスに含まれていたらログイン成功」と判断するための条件
@@ -2430,10 +2436,10 @@ hydraオプションの基本
 	- S=を使うのは、**失敗メッセージがない** or **成功時のパターンが明確なとき**に便利
 
 	- 使用例（① 成功時に「Dashboard」と表示される）：
-	{{CODE_BLOCK_145}}
+	{{CODE_BLOCK_146}}
 
 	- 使用例（② 成功時にHTTPステータスコード302でリダイレクト）：
-	{{CODE_BLOCK_146}}
+	{{CODE_BLOCK_147}}
 
 - F= と S= の使い分け
 	- ほとんどのケースでは **F=（失敗条件）だけ指定**すればOK
@@ -2449,10 +2455,10 @@ hydraオプションの基本
 	- 正しい情報を入力したときの**レスポンスの違い**を見つける（リダイレクトや文字の変化）
 
 辞書の取得
-{{CODE_BLOCK_147}}
+{{CODE_BLOCK_148}}
 
 実行
-{{CODE_BLOCK_148}}
+{{CODE_BLOCK_149}}
 
 
 ## medusa
@@ -2466,7 +2472,7 @@ hydraオプションの基本
 | 🌐 Webフォーム対応 | http-post-formで高機能に対応      | web-formモジュールもあるが柔軟性はHydraが上   |
 | 📦 標準搭載      | Kali, Parrotなどにプリインストール    | 同じく多くのペンテスト用OSに搭載済み            |
 | 🔍 デバッグ・出力   | Verboseログが細かくてわかりやすい       | ログはややシンプル。高速処理に特化              |
-{{CODE_BLOCK_149}}
+{{CODE_BLOCK_150}}
 
 | **パラメータ** | **説明**                              | **使用例**                                                   |
 | --------- | ----------------------------------- | --------------------------------------------------------- |
@@ -2495,46 +2501,46 @@ hydraオプションの基本
 | web-form   | Webログインフォーム    | HTTP POST を使うログインフォームへの攻撃          | medusa -M web-form -h www.example.com -U users.txt -P passwords.txt -m FORM:"username=^USER^&password=^PASS^:F=Invalid"   |
 ## 有用なファイルの検索
 エンコードされたファイルの検索
-{{CODE_BLOCK_150}}
-
-SSHキーの検索
 {{CODE_BLOCK_151}}
 
-暗号化されたSSHの検索
+SSHキーの検索
 {{CODE_BLOCK_152}}
+
+暗号化されたSSHの検索
+{{CODE_BLOCK_153}}
 
 SSH の秘密鍵 (SSH.private) を John the Ripper でクラックできる形式 (hash) に変換する
 SSH.privateは、id_rsaに置き換えられる
 出力を ssh.hash に保存。
-{{CODE_BLOCK_153}}
+{{CODE_BLOCK_154}}
 
 SSHキーのクラック
-{{CODE_BLOCK_154}}
+{{CODE_BLOCK_155}}
 
 ## パスワード付きファイルのクラック
 - パスワードで保護されたファイルや暗号化されたファイルも解読することもできる
-{{CODE_BLOCK_155}}
-
 {{CODE_BLOCK_156}}
+
+{{CODE_BLOCK_157}}
 
 また、それぞれのファイルにあったjohnを見つけて使用することもできる
 それぞれのツールにあったjohnを検索する
-{{CODE_BLOCK_157}}
-
-Microsoft Office ドキュメントのクラッキング
 {{CODE_BLOCK_158}}
 
+Microsoft Office ドキュメントのクラッキング
 {{CODE_BLOCK_159}}
 
-PDF のクラッキング
 {{CODE_BLOCK_160}}
 
+PDF のクラッキング
 {{CODE_BLOCK_161}}
+
+{{CODE_BLOCK_162}}
 **複雑な形式**
 1. まず自分の目的に合ったjohnのスクリプトを探して、johnが解析できる.johnの形に変換する
-{{CODE_BLOCK_162}}
-1. johnでワードリストを指定して解析
 {{CODE_BLOCK_163}}
+1. johnでワードリストを指定して解析
+{{CODE_BLOCK_164}}
 
 
 ## パスワード付き圧縮ファイルのクラック
@@ -2542,15 +2548,15 @@ zipファイルのクラック
 - パスワード付きzipをjohnが解析する形にする
 - rockyou.txtで辞書攻撃する
 - クラックされたハッシュの表示
-{{CODE_BLOCK_164}}
-
 {{CODE_BLOCK_165}}
 
-gzipファイルのクラック
 {{CODE_BLOCK_166}}
 
-bitlockerファイルのクラック
+gzipファイルのクラック
 {{CODE_BLOCK_167}}
+
+bitlockerファイルのクラック
+{{CODE_BLOCK_168}}
 
 パスワードを解読すると、暗号化されたドライブを開く
 BitLocker で暗号化された仮想ドライブをマウントする最も簡単な方法は、それを Windows システムに転送してマウントする
@@ -2563,7 +2569,7 @@ BitLocker で暗号化された仮想ドライブをマウントする最も簡�
 - なんか443で待ち受けておくと、ターゲットにファイアーウォールがあったとしてもスルーすることができる
 - https://www.revshells.com/
 ターゲットがWindowsの場合は、AntiVirus(AV)が働く可能性があるから、その時は、PSを右クリックから管理者権限で起動して、以下のコマンドを打つことで、AVをオフにできるって
-{{CODE_BLOCK_168}}
+{{CODE_BLOCK_169}}
 
 
 ### バインドシェル
@@ -2573,9 +2579,9 @@ BitLocker で暗号化された仮想ドライブをマウントする最も簡�
 
 コマンド
 - ターゲット側
-{{CODE_BLOCK_169}}
-- 攻撃者側
 {{CODE_BLOCK_170}}
+- 攻撃者側
+{{CODE_BLOCK_171}}
 
 ### Webシェル
 - webページ上でのシェル
@@ -2615,7 +2621,7 @@ Windows
 
 # Metasploit 
 なんか検索全体で、こんな感じで、`grep` で検索できるらしい
-{{CODE_BLOCK_171}}
+{{CODE_BLOCK_172}}
 ## Moduleのタイプ
 - Auxiliary  
     スキャン、ファズ、スニッフィング、管理などの補助的な機能を提供し、追加サポートを行います。
@@ -2647,7 +2653,7 @@ Windows
 
 Metaploit内では、以下で、payloadとencordを行える
 - 利用可能なペイロードと同様に、エンコーダもエクスプロイトモジュールに従って自動的にフィルタリングされ、互換性のあるペイロードのみが表示される
-{{CODE_BLOCK_172}}
+{{CODE_BLOCK_173}}
 
 
 ### MSFVenom
@@ -2663,7 +2669,7 @@ Metaploit内では、以下で、payloadとencordを行える
 	- 直接ネットワーク経由で攻撃できない場合に、ユーザーダブルクリック誘導などがよく使われる方法
 
 - ペイロードのリストの一覧を表示する
-{{CODE_BLOCK_173}}
+{{CODE_BLOCK_174}}
 
 Descriptionに書いてあるstagedとstagelessの違い
 - staged
@@ -2701,7 +2707,7 @@ Descriptionに書いてあるstagedとstagelessの違い
 
 ### ペイロードの作成
 エンコードなし
-{{CODE_BLOCK_174}}
+{{CODE_BLOCK_175}}
 
 | **オプション/要素**                     | **役割・説明**                                                                 |
 | -------------------------------- | ------------------------------------------------------------------------- |
@@ -2724,7 +2730,7 @@ Shikata Ga Nai (SGN) について
 - 名前「仕方がない」は「どうしようもない」という意味で、数年前にはその通りに感じられたでしょう。しかし、現代ではSGNだけでは万能ではなく、保護システムを回避するために他の手法も検討されています。
 
 shikata_ga_naiでエンコード
-{{CODE_BLOCK_175}}
+{{CODE_BLOCK_176}}
 
 | オプション                          | 説明                                        |
 | ------------------------------ | ----------------------------------------- |
@@ -2738,17 +2744,17 @@ shikata_ga_naiでエンコード
 | `-e x86/shikata_ga_nai`        | エンコーダーとして x86/shikata_ga_nai を使用（エンコード処理） |
 
 エンコードなし
-{{CODE_BLOCK_176}}
+{{CODE_BLOCK_177}}
 
 #### AVの回避
 最近のAVでは、それぞれのエンコードを一回行っても全然検知されてしまう
 - 1つの簡単なAV回避の方法は、同じエンコーディングを反復してエンコードしてみること
 	- でも全然回避できないことが多いから、他の方法を使ったほうがいい
-{{CODE_BLOCK_177}}
+{{CODE_BLOCK_178}}
 - Metasploitは、APIキーでペイロードを分析することができる`msf-virustotal`と呼ばれるツールを提供しているから、それで確認して、AVの回避を向上させるのも面白いかもしれない
 	- VirusTotalへの無料登録が必要
 こんな感じで使えるらしい
-{{CODE_BLOCK_178}}
+{{CODE_BLOCK_179}}
 
 ### 実行手順の流れ
 1. 攻撃者が `msfvenom` コマンドでペイロードを生成（`createbackup.elf`）
@@ -2857,24 +2863,24 @@ PowerShell を使用する場合
 
 ## **セッション管理**
 - Meterpreterは繋げるまま、一旦Meterpreterから抜ける
-{{CODE_BLOCK_179}}
+{{CODE_BLOCK_180}}
 
 - セッション一覧表示
 
-{{CODE_BLOCK_180}}
+{{CODE_BLOCK_181}}
 
 - セッション接続・セッションに戻る
 
-{{CODE_BLOCK_181}}
+{{CODE_BLOCK_182}}
 
 - セッション全終了
 
-{{CODE_BLOCK_182}}
+{{CODE_BLOCK_183}}
 
 ### **特権昇格の発見とエクスプロイト**
 
 Mesterpreterでユーザー権限でセッションが確立している時、ターゲットシステムに適した特権昇格エクスプロイトを提案させることができる
-{{CODE_BLOCK_183}}
+{{CODE_BLOCK_184}}
 
 ---
 
@@ -2892,12 +2898,12 @@ Mesterpreterでユーザー権限でセッションが確立している時、�
 		- ruby: exec "/bin/sh"
 		- lua: os.execute('/bin/sh')
 Vimのセッション内でもできる
-{{CODE_BLOCK_184}}
+{{CODE_BLOCK_185}}
 
 - windows
 - 方法 : rlwrap は、コマンドラインの入力履歴や補完機能を提供するラッパープログラムです。これを nc と組み合わせることで、シェルの機能を強化できます。
 
-{{CODE_BLOCK_185}}
+{{CODE_BLOCK_186}}
 
 # 横展開
 
@@ -2939,7 +2945,7 @@ Vimのセッション内でもできる
 
 # 権限昇格
 - 現在のユーザーで、sudo コマンドを使用して実行可能なコマンドや権限を確認する
-{{CODE_BLOCK_186}}
+{{CODE_BLOCK_187}}
 - 正直HTBのEasyとかMediumの一部では、このコマンド打って、NoPasswordって書いてあるスクリプトをsudo権限で実行すれば権限昇格できる。
 
 - ここにまとまってるから、あとでまとめる
@@ -3005,13 +3011,13 @@ SSHキー
 ユーザー`/.ssh/`ディレクトリへの書き込みアクセス権がある場合
 - ユーザーのsshディレクトリの/home/user/.ssh/authorized_keysに公開鍵を配置
 - 出力ファイルを指定するには、まず ssh-keygen と -f フラグで新しいキーを作成する
-{{CODE_BLOCK_187}}
+{{CODE_BLOCK_188}}
 - `key`（`ssh -i`で使用します）と`key.pub`の2つのファイル
 - `key.pub`をコピーして、リモートマシンで`/root/.ssh/authorized_keys`に追加
 - 被害者PCで実行
-{{CODE_BLOCK_188}}
-- これで、リモートサーバーは、秘密鍵を使用してそのユーザーとしてログインできるはず
 {{CODE_BLOCK_189}}
+- これで、リモートサーバーは、秘密鍵を使用してそのユーザーとしてログインできるはず
+{{CODE_BLOCK_190}}
 
 
 ## LOLBANS
@@ -3057,7 +3063,7 @@ Powershellのダウングレード
 	- 逆に、PowerShell 2.0以前のバージョンを呼び出すことができれば、そのシェル上での操作はEvent Viewer（イベントビューア）に記録されない
 	- **ディフェンダーの監視の目をかいくぐる**ための優れた方法の一つ
 Powershellをダウングレードするコマンド
-{{CODE_BLOCK_190}}
+{{CODE_BLOCK_191}}
 
 本当にダウングレードできているのか
 - ダウングレードする前とダウングレードした後に`Get-Host`コマンドを打って、出力結果の`Version`の部分を見る
@@ -3078,20 +3084,20 @@ Windowsファイアーウォールの設定状態や、稼働状況を確認す�
 
 ファイアーウォールの確認
 - 全てのファイアーウォールプロファイル(ドメイン・プライベート・パブリック)に関する設定情報が表示できる
-{{CODE_BLOCK_191}}
+{{CODE_BLOCK_192}}
 
 Windows Defenderの確認
 cmd.exeで実行
 - STATEの部分に注目する
-{{CODE_BLOCK_192}}
+{{CODE_BLOCK_193}}
 
 Defender の詳細なステータスや構成設定を確認する
-{{CODE_BLOCK_193}}
+{{CODE_BLOCK_194}}
 
 **自分以外に誰かログインしていないか**
 - 自分以外もログインしていた場合、ポップアップウィンドウが出たり、強制ログアウトさせられることがある
 - なので、まず侵入した時は自分以外に誰かログインしていないかを確認する
-{{CODE_BLOCK_194}}
+{{CODE_BLOCK_195}}
 STATEの見方
 
 | STATE                  | 意味                          | 誰かログインしてる？ | 補足                        |
@@ -3102,7 +3108,7 @@ STATEの見方
 | **Idle**               | 放置状態（Activeのまま時間が経過）        | ✅ はい       | 実際はActiveと同じ扱いになることもある    |
 類似コマンド
 - Windows環境で現在ログインしているユーザーのセッション情報を一覧表示するコマンド
-{{CODE_BLOCK_195}}
+{{CODE_BLOCK_196}}
 
 #### ネットワーク情報
 - 現在のホストが把握している他のホストやネットワークを表示する
@@ -3185,17 +3191,17 @@ PowerShellで実行する
 	- dsquery を使用するには、ホスト上で昇格権限（管理者権限）を持っているか、SYSTEMコンテキストでコマンドプロンプトやPowerShellを実行できる必要がある
 
 ユーザー検索
-{{CODE_BLOCK_196}}
-
-ホストの検索
 {{CODE_BLOCK_197}}
 
-ワイルドカードを使った検索
+ホストの検索
 {{CODE_BLOCK_198}}
+
+ワイルドカードを使った検索
+{{CODE_BLOCK_199}}
 
 LDAP検索フィルターと組み合わせて、より詳細で条件を絞った検索を行うことができる
 **userAccountControl 属性に PASSWD_NOTREQD（パスワード不要）フラグが設定されたユーザー**を検索するコマンド
-{{CODE_BLOCK_199}}
+{{CODE_BLOCK_200}}
 上のコマンドの詳細
 - 出力されるuserAccountは、それぞれのフラグの足し算なので、以下を見て、分解すればどのアカウントがどのフラグが立っているかがわかる
 userAccountControlのフラグの一覧
@@ -3211,10 +3217,10 @@ userAccountControlのフラグの一覧
 - net user "氏名" /domain のようにスペースを含むフルネーム（CN）を使って net user を実行すると、エラーになることがある。
 - これは net user が sAMAccountName（ログオン名） を必要とするため
 そのため、対象ユーザーのログオン名を調べるには、以下のように sAMAccountName を取得する
-{{CODE_BLOCK_200}}
+{{CODE_BLOCK_201}}
 
 得られたログオン名(yolandag)を使って、以下のように net user で詳細情報を確認する
-{{CODE_BLOCK_201}}
+{{CODE_BLOCK_202}}
 
 - こうすることで、アカウントが有効かどうか・グループ所属・ログオン可能かどうかをチェックでき、そこからパスワードスプレーやKerberoastingなど、次の攻撃ステップに進む判断材料になる。
 
@@ -3236,71 +3242,71 @@ LDAP OIDマッチングルール一覧
 ### Linux
 
 - ファイル名が`user.txt`の場合
-{{CODE_BLOCK_202}}
+{{CODE_BLOCK_203}}
 
 - ファイル名が`root.txt`の場合
-{{CODE_BLOCK_203}}
+{{CODE_BLOCK_204}}
 
 `grep`を使用して特定の文字列を含むファイルを検索
 - `user`という文字列を検索（大文字・小文字を無視）
-{{CODE_BLOCK_204}}
-- `root`という文字列を検索（大文字・小文字を無視）
 {{CODE_BLOCK_205}}
-
-クレデンシャルファイルの検索
+- `root`という文字列を検索（大文字・小文字を無視）
 {{CODE_BLOCK_206}}
 
+クレデンシャルファイルの検索
 {{CODE_BLOCK_207}}
+
+{{CODE_BLOCK_208}}
 ### Windows
 
 Cドライブ全体を検索する場合  
 - CMD
-{{CODE_BLOCK_208}}
-
 {{CODE_BLOCK_209}}
+
+{{CODE_BLOCK_210}}
 - PowerShell
 クレデンシャルファイルの検索
-{{CODE_BLOCK_210}}
+{{CODE_BLOCK_211}}
 
 ## ligolo-ng
 - https://docs.ligolo.ng/Quickstart/
 
 ### 1. 必要なリソースのダウンロード
-{{CODE_BLOCK_211}}
+{{CODE_BLOCK_212}}
 
 ### 2. 攻撃者サーバー での設定
-{{CODE_BLOCK_212}}
+{{CODE_BLOCK_213}}
 - device or resource busy というエラーが出た場合は、攻撃者マシンの**別のターミナル**で `sudo ip link delete ligolo0` を実行してから再度試す
 
 仮想NICの作成
-{{CODE_BLOCK_213}}
+{{CODE_BLOCK_214}}
 ### 3.ターゲット側の設定
 #### Linux
 ダウンロード
-{{CODE_BLOCK_214}}
-実行
 {{CODE_BLOCK_215}}
+実行
+{{CODE_BLOCK_216}}
 
 #### Windows
-{{CODE_BLOCK_216}}
+{{CODE_BLOCK_217}}
 
 ### 4.攻撃者側での設定
 - proxy を起動すると、プロンプトが表示されます。Agentが接続してくると、proxyのコンソールに通知があります。
- {{CODE_BLOCK_217}}
+ {{CODE_BLOCK_218}}
 - ifconfigは、ターゲットの内部ネットワーク情報の確認のために行う、攻撃者のNICではない。
 	- 例えば、eth0 インターフェースに 172.16.1.100/24 と表示されていれば、ターゲットの内部ネットワークは 172.16.1.0/24
 
 別のターミナルで
-{{CODE_BLOCK_218}}
+{{CODE_BLOCK_219}}
 
 ### 5. 内部ネットワークの調査
 ここから、内部ネットワークの攻撃は、内部ネットワークのIPになる
 例えば、攻撃者側でssh入って、ifconfigしたときのipアドレスで、攻撃者側からnmapとかpingができるっていう話
-{{CODE_BLOCK_219}}
+{{CODE_BLOCK_220}}
 
 - Ligolo-ngを使ってる時は、`nmap -sn`だとエラーが起きる
 	- `nmap -PE -sn `でエラーを防ぐことができつつ、ICMPエコーリクエストのみで調査できる
-{{CODE_BLOCK_220}}
+{{CODE_BLOCK_221}}
 
 
 ## 内部ファイルの持ち出し
