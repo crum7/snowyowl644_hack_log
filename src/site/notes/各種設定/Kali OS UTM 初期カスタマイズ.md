@@ -43,13 +43,18 @@ xrandr --addmode Virtual-1 "1784x1440_alt"
 xrandr --output Virtual-1 --mode "1784x1440_alt"
 ```
 
+CA Tech Loungのモニターで、(3360❌1890)で2分割にするための設定
+```sh
+cvt 1680 1890
+xrandr --newmode "1680x1890_60.00"  270.50  1680 1808 1992 2304  1890 1893 1903 1958 -hsync +vsync
+xrandr --addmode Virtual-1 "1680x1890_60.00"
+xrandr --output Virtual-1 --mode "1680x1890_60.00"
+```
 
 ## パッケージアップグレード
 ```sh
 sudo apt upgrade
 sudo apt update 
-
-
 ```
 ## Bloodhound
 admin : B7r!kLp29#qW
