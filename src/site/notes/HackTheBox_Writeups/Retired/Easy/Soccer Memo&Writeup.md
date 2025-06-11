@@ -1080,3 +1080,10 @@ uid=0(root) gid=0(root) groups=0(root)
 
 ### ポイント
 WebSocketでも中間のサーバーをhttpで立てれば、SQLMapは使える！
+
+Memo・Writeup
+https://snowyowl644hacklog.vercel.app/hack-the-box-writeups/retired/easy/soccer-memo-and-writeup/
+
+I just pwned Soccer in Hack The Box!
+https://www.hackthebox.com/achievement/machine/620650/519
+[#hackthebox](https://x.com/hashtag/hackthebox?src=hashtag_click) [#htb](https://x.com/hashtag/htb?src=hashtag_click) [#cybersecurity](https://x.com/hashtag/cybersecurity?src=hashtag_click)
