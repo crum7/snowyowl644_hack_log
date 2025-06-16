@@ -9,7 +9,7 @@
 - #medium
 - OS : #Windows
 - Machine Author(s): [nirza](https://app.hackthebox.com/users/800960)
-- Hack Date: 2025-06-11,15:28
+- Hack Date: 2025-06-16
 
 ---
 # 前提
@@ -1102,3 +1102,7 @@ Mode                 LastWriteTime         Length Name
 *Evil-WinRM* PS C:\Users\Administrator\Desktop> type root.txt
 
 ```
+
+
+
+![](https://i.imgur.com/nOM21RQ.png)

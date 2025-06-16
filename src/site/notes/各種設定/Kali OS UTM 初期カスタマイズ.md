@@ -96,3 +96,7 @@ python3 ~/tools/<ToolName>/<Excute File> "$@"
 ```sh
 chmod +x ~/.local/bin/<ToolName>
 ```
+
+# ショートカットの設定
+autohotkeyの設定
+![](https://i.imgur.com/p5gT7We.png)
