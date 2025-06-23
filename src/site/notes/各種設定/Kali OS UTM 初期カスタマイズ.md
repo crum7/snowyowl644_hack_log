@@ -62,12 +62,25 @@ admin : mimic
 
 
 ## ログインしたらやるコマンド
+12pt
 ```sh
 setxkbmap -option ctrl:swap_lwin_lctl
 xrandr --output Virtual-1 --mode "1784x1440_alt"
 ```
 
 
+ヒントの有効化
+```sh
+unset ZSH_AUTOSUGGEST_DISABLE
+source ~/.zshrc
+```
+
+
+ヒントの無効化
+```sh
+ZSH_AUTOSUGGEST_DISABLE=1
+source ~/.zshrc
+```
 # 環境構築
 新しいツールを入れたら、次のためにパスを通す
 ダウンロード・インストールフォルダ : `/home/kali/tools`
