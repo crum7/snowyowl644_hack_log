@@ -2,12 +2,13 @@
 {"dg-publish":true,"permalink":"/try-hack-me-memo/machine/billing/","noteIcon":""}
 ---
 
+![](https://i.imgur.com/4v8RPv5.png)
 
-- URL : 
-- #easy #medium #hard #insane
-- OS : #Linux #Windows
-- Machine Author(s): 
-- Hack Date: 2025-06-24,12:47
+- URL : https://tryhackme.com/room/billing
+- #easy 
+- OS : #Linux 
+- Machine Author(s): [tryhackme](https://tryhackme.com/p/tryhackme),[RunasRs](https://tryhackme.com/p/RunasRs)
+- Hack Date: 2025-06-24
 
 ---
 
@@ -534,3 +535,5 @@ root@ip-10-10-155-237:/root# cat root.txt
 ![](https://i.imgur.com/BIiQJ2S.png)
 
 特に今回は詰まらず、撃破できたので詰まったポイントとかはありません
+
+
