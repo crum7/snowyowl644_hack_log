@@ -62,7 +62,7 @@ admin : mimic
 
 
 ## ログインしたらやるコマンド
-12pt
+
 ```sh
 setxkbmap -option ctrl:swap_lwin_lctl
 xrandr --output Virtual-1 --mode "1784x1440_alt"
