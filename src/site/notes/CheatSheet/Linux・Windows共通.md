@@ -309,9 +309,12 @@ python xsstrike.py -u "http://it.k2.thm/dashboard" --data "title=test&descriptio
 
 ### SQL Injection
 - サーバーと通信して検索する系のページ、絞り込む系のページ→ SQL インジェクションあることありますよ
-検出
-`'`を入れる
-500エラーだったら、SQL Injectionの脆弱性ある可能性あり
+
+#### 検出
+- `'`を入れる
+	- 500エラーだったら、SQL Injectionの脆弱性ある可能性あり
+	- しかし、これではStored SQL Injecttionは検出できない
+	- 
 
 ### レポート作成ツール
 #### EyeWitness
