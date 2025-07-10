@@ -69,7 +69,7 @@ CrackMapExecの後継で、アクティブに開発が進められてる
 
 guestで LDAP に接続してユーザー列挙
 - 特定のユーザーの description フィールドにパスワードが埋め込まれていることがあり、このツールで、それを見つけられる
-	- 使用例 : [[TryHackMe_Memo/Machine/Ledger#nxc\|Ledger#nxc]]
+	- 使用例 : [[TryHackMe/Machine/Ledger#nxc\|Ledger#nxc]]
 ```sh
 nxc ldap <Domain> -u 'guest' -p '' --users
 ```
@@ -422,7 +422,7 @@ NTLMハッシュのリクエスト
 ```sh
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.10.133.131
 ```
-使用例 : [[TryHackMe_Memo/Machine/Ledger#Certpy\|Ledger#Certpy]]
+使用例 : [[TryHackMe/Machine/Ledger#Certpy\|Ledger#Certpy]]
 
 ## 特権アクセス先の利用
 ### RDP (Remote Desktop Protocol)

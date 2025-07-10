@@ -284,10 +284,10 @@ python3 ReconSpider.py http://
 管理用のページと、管理用ページに何かしらする系→Stoerd XSSがあることありますよ
 保存型XSSあるので、見逃さずに
 過去の例
-- [[TryHackMe_Memo/Machine/K2　Base Camp (今度は何も見ずに解く)\|K2　Base Camp (今度は何も見ずに解く)]]
+- [[TryHackMe/Machine/K2　Base Camp (今度は何も見ずに解く)\|K2　Base Camp (今度は何も見ずに解く)]]
 
 WAF回避の例
-- [[TryHackMe_Memo/Machine/K2　Base Camp (今度は何も見ずに解く)\|K2　Base Camp (今度は何も見ずに解く)]]
+- [[TryHackMe/Machine/K2　Base Camp (今度は何も見ずに解く)\|K2　Base Camp (今度は何も見ずに解く)]]
 
 
 CTFでは関係ないけど、実務では関係あるrefleted XSS、DOM XSSの検出に使える
