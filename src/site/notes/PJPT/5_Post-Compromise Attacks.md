@@ -76,7 +76,6 @@ crackmapexec smb <ip/ネットワーク範囲> -u <user> -d <domain> -H <取得�
 ### 取得するべきアカウント
 取得すべきは、ユーザーアカウントと管理者アカウント
 - 「DefaultAccount」と「WDAGUtilityAccount」は意味がないので無視
-### Wdigest
 
 
 ## 対策

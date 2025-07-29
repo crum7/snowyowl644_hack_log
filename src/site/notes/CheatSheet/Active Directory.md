@@ -32,21 +32,21 @@ nmap -sV <IP>
 資格情報を得るための列挙・攻撃
 
 ## ユーザー列挙
-### enum4linux
+### enum4linux-ng
 普通に使う
 ```sh
-enum4linux -A  $Target_IP
+enum4linux-ng -A  $Target_IP
 ```
 
 
 SMB、RPC、LDAP経由でWindows/Sambaホストから情報を列挙し、ユーザーリストを取得
 ```shell
-enum4linux -U <DC_IP> | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+enum4linux-ng -U <DC_IP> | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
 ```
 
 背腕にわかっている認証情報で
 ```sh
-enum4linux -u <ユーザー名> -p <パスワード> $Target_IP
+enum4linux-ng -u <ユーザー名> -p <パスワード> $Target_IP
 ```
 
 ### rpcclient
@@ -523,7 +523,7 @@ Base64エンコードされたチケットや.kirbiファイルをメモリに�
 サービスプリンシパル名(SPN)が設定されたユーザーアカウント（Kerberoastingの対象）の列挙
 - GetUserSPNs.py (Linux)
 ```shell
-GetUserSPNs.py <DOMAIN>/<USER>:<PASSWORD> -dc-ip <DC_IP>
+impacket-GetUserSPNs <DOMAIN>/<USER>:<PASSWORD> -dc-ip <DC_IP>
 ```
 - PowerView (Windows)
 ```powershell
