@@ -5,10 +5,9 @@
 ![](https://i.imgur.com/MFFHLmO.png)
 
 
-- URL : 
-- #easy #medium #hard #insane
-- OS : #Linux #Windows
-- Machine Author(s): 
+- URL : https://app.hackthebox.com/machines/Timelapse
+- #easy
+- OS : #Windows
 - Hack Date: 2025-08-09,13:11 ~ User : 14:10,
 
 ---

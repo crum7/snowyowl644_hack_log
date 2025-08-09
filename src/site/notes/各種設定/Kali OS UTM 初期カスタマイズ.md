@@ -51,6 +51,13 @@ xrandr --addmode Virtual-1 "1680x1890_60.00"
 xrandr --output Virtual-1 --mode "1680x1890_60.00"
 ```
 
+macで2分割
+```sh
+cvt 900 1169
+xrandr --newmode "904x1169_60.00"   87.75  904 960 1056 1208  1169 1172 1182 1212 -hsync +vsync
+xrandr --addmode Virtual-1 "904x1169_60.00"
+xrandr --output Virtual-1 --mode "904x1169_60.00"
+```
 ## パッケージアップグレード
 ```sh
 sudo apt upgrade

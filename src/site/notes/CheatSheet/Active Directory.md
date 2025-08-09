@@ -410,7 +410,6 @@ adidnsdump -u <DOMAIN_NAME>\\<USER> ldap//<DC_IP> -r
 ---
 # Lateral Movement
 他の資格情報を取得するための列挙・攻撃
-
 ## Certpy
 - Active Directory Certificate Services（AD CS）に対する攻撃や調査を行えるツール
 - AD CS：Active Directory Certificate Services。Windowsドメイン環境に証明書を発行・管理するサービス。
@@ -434,6 +433,14 @@ NTLMハッシュのリクエスト
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.10.133.131
 ```
 使用例 : [[TryHackMe/Machine/Ledger#Certpy\|Ledger#Certpy]]
+
+## windows版`.bash_history`
+- windows10からlinuxで言うところの.bash_historyがデフォルトで有効になった
+- ここに平文の認証情報が書いてあることもあるかも
+
+```sh
+type $env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
+```
 
 ## 特権アクセス先の利用
 ### RDP (Remote Desktop Protocol)
