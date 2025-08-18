@@ -125,7 +125,7 @@ python ds_store_exp.py http://10.13.38.11/.DS_Store
 ```
 ### Feroxbuster 
 ```bash
-feroxbuster -u <http://TARGET>
+feroxbuster -u <http://TARGET>  -C 404 -C 500
 ```
 
 ### Dirsearch
@@ -531,6 +531,7 @@ put myfile.txt
 
 - 共有内参照/取得
 ```
+smbclient -L //$Target_IP/  -U USERNAME%PASSWORD
 smbclient //"$Target_IP"/SHARENAME -U USERNAME%PASSWORD
 smbmap -H $Target_IP -u USERNAME -p 'PASSWORD' -s SHARENAME
 ```
@@ -674,7 +675,7 @@ sudo nmap -p1433 --script ms-sql-* $Target_IP
 
 - mssqlclient 接続
 ```
-mssqlclient.py Administrator@$Target_IP -windows-auth
+impacket-mssqlclient Administrator@$Target_IP -windows-auth
 enable_xp_cmdshell       # cmdshell 有効化
 xp_cmdshell whoami
 ```

