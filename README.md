@@ -1,3 +1,9 @@
+注
+- gitbookに移行しました
+- gitbookの方が遥かに見やすくて更新されています。
+[https://snowyowls-organization.gitbook.io/snowyowl644-hacklog/](https://snowyowls-organization.gitbook.io/snowyowl644-hacklog/)
+
+
 # 🌿 snowyowl644hacklog
 このリポジトリは、[Obsidian Digital Garden Plugin](https://github.com/oleeskild/Obsidian-Digital-Garden) を使って、自分のセキュリティに関するナレッジを公開するためのデジタルガーデンです！🌱
 
